@@ -21,7 +21,7 @@
     id<AwesomeMenuItemDelegate> __weak _delegate;
 }
 
-@property (nonatomic, strong, readonly) UIImageView *contentImageView;
+@property (nonatomic, strong) UIImageView *contentImageView;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
