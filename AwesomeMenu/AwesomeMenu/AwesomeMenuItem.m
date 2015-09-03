@@ -12,32 +12,61 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 @implementation AwesomeMenuItem
 
 #pragma mark - initialization & cleaning up
+- (id)initWithImage:(UIImage *)img
+   highlightedImage:(UIImage *)himg
+       ContentImage:(UIImage *)cimg
+highlightedContentImage:(UIImage *)hcimg
+{
+    return [self initWithImage:img highlightedImage:himg ContentImage:cimg highlightedContentImage:hcimg text:nil];
+}
+
 - (id)initWithImage:(UIImage *)img 
    highlightedImage:(UIImage *)himg
        ContentImage:(UIImage *)cimg
-highlightedContentImage:(UIImage *)hcimg;
+highlightedContentImage:(UIImage *)hcimg
+               text:(NSString *)text
 {
     if (self = [super init]) {
+        self.backgroundColor = [UIColor clearColor];
         self.image = img;
         self.highlightedImage = himg;
         self.userInteractionEnabled = YES;
-        self.contentImageView = [[UIImageView alloc] initWithImage:cimg];
-        self.contentImageView.highlightedImage = hcimg;
-        [self addSubview:self.contentImageView];
+
+        UIImageView *contentImageView = [[UIImageView alloc] initWithImage:cimg];
+        contentImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        contentImageView.highlightedImage = hcimg;
+        [contentImageView setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+        [self addSubview:contentImageView];
+        self.contentImageView = contentImageView;
+        
+        UILabel *textLabel = [[UILabel alloc] init];
+        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        textLabel.textColor = [UIColor blueColor];
+        textLabel.text = text;
+        [self addSubview:textLabel];
+        self.textLabel = textLabel;
+        
+        NSDictionary *views = NSDictionaryOfVariableBindings(contentImageView, textLabel);
+        NSDictionary *metrics = @{ };
+        
+        if (text.length > 0) {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[textLabel]-10-[contentImageView]|" options:0 metrics:metrics views:views]];
+            [self addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
+        }
+
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:contentImageView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:contentImageView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
+        
+        [self sizeToFit];
     }
     return self;
 }
 
 #pragma mark - UIView's methods
-- (void)layoutSubviews
+
+- (CGSize)sizeThatFits:(CGSize)size
 {
-    [super layoutSubviews];
-    
-    self.bounds = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
-    
-    float width = self.contentImageView.image.size.width;
-    float height = self.contentImageView.image.size.height;
-    self.contentImageView.frame = CGRectMake(self.bounds.size.width/2 - width/2, self.bounds.size.height/2 - height/2, width, height);
+    return CGSizeMake(self.image.size.width, self.image.size.height);
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -81,5 +110,24 @@ highlightedContentImage:(UIImage *)hcimg;
     [self.contentImageView setHighlighted:highlighted];
 }
 
+- (void)awesomeMenuDidOpen:(AwesomeMenu *)awesomeMenu
+{
+    //Abstract
+}
+
+- (void)awesomeMenuDidClose:(AwesomeMenu *)awesomeMenu
+{
+    //Abstract
+}
+
+- (void)awesomeMenuWillOpen:(AwesomeMenu *)awesomeMenu
+{
+    //Abstract
+}
+
+- (void)awesomeMenuWillClose:(AwesomeMenu *)awesomeMenu
+{
+    //Abstract
+}
 
 @end

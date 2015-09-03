@@ -8,20 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class AwesomeMenu;
 @protocol AwesomeMenuItemDelegate;
 
 @interface AwesomeMenuItem : UIImageView
-{
-    UIImageView *_contentImageView;
-    CGPoint _startPoint;
-    CGPoint _endPoint;
-    CGPoint _nearPoint; // near
-    CGPoint _farPoint; // far
-    
-    id<AwesomeMenuItemDelegate> __weak _delegate;
-}
 
 @property (nonatomic, strong) UIImageView *contentImageView;
+@property (nonatomic, weak) UILabel *textLabel;
 
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGPoint endPoint;
@@ -30,11 +23,21 @@
 
 @property (nonatomic, weak) id<AwesomeMenuItemDelegate> delegate;
 
-- (id)initWithImage:(UIImage *)img 
+- (id)initWithImage:(UIImage *)img
+   highlightedImage:(UIImage *)himg
+       ContentImage:(UIImage *)cimg
+highlightedContentImage:(UIImage *)hcimg
+               text:(NSString *)text;
+
+- (id)initWithImage:(UIImage *)img
    highlightedImage:(UIImage *)himg
        ContentImage:(UIImage *)cimg
 highlightedContentImage:(UIImage *)hcimg;
 
+- (void)awesomeMenuDidOpen:(AwesomeMenu *)awesomeMenu;
+- (void)awesomeMenuDidClose:(AwesomeMenu *)awesomeMenu;
+- (void)awesomeMenuWillOpen:(AwesomeMenu *)awesomeMenu;
+- (void)awesomeMenuWillClose:(AwesomeMenu *)awesomeMenu;
 
 @end
 
